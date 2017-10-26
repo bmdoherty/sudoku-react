@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Possibilities from './Possibilities';
 
 export default class Cell extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
 
     isHighlighted(cell, highlight){
         let highLightClass = ''
@@ -19,49 +19,49 @@ export default class Cell extends React.Component {
             highLightClass = 'targetCell' 
           }
     
-          if(highlight.type == 'nakedSingle'){
+          if(highlight.type === 'nakedSingle'){
             if( highlight.cell.column === cell.column ){
-              highLightClass = highLightClass + ' ' + 'highlightColumn'
+              highLightClass = highLightClass + ' highlightColumn'
             }    
         
             if(  highlight.cell.row === cell.row ){
-              highLightClass = highLightClass + ' ' + 'highlightRow'
+              highLightClass = highLightClass + ' highlightRow'
             }       
           
             if(  highlight.cell.square === cell.square ){
-              highLightClass = highLightClass + ' ' + 'highlightSquare'
+              highLightClass = highLightClass + ' highlightSquare'
             }  
           }            
         
 
-          if(highlight.type == 'hiddenSingle'){
+          if(highlight.type === 'hiddenSingle'){
            // console.log(highlight)
             if( highlight.house.type === 'row' &&  highlight.house.id === cell.rowID){
-              highLightClass = highLightClass + ' ' + 'highlightRow'
+              highLightClass = highLightClass + ' highlightRow'
             }    
         
             if( highlight.house.type === 'column' &&  highlight.house.id === cell.columnID){
-              highLightClass = highLightClass + ' ' + 'highlightColumn'
+              highLightClass = highLightClass + ' highlightColumn'
             }       
           
             if( highlight.house.type === 'square' &&  highlight.house.id === cell.squareID){
-              highLightClass = highLightClass + ' ' + 'highlightSquare'
+              highLightClass = highLightClass + ' highlightSquare'
             }  
           }  
         }
 
-          if(highlight.type == 'naked'){
+          if(highlight.type === 'naked'){
             
              if( highlight.house.type === 'row' &&  highlight.house.id === cell.rowID){
-               highLightClass = highLightClass + ' ' + 'highlightRow'
+               highLightClass = highLightClass + ' highlightRow'
              }    
          
              if( highlight.house.type === 'column' &&  highlight.house.id === cell.columnID){
-               highLightClass = highLightClass + ' ' + 'highlightColumn'
+               highLightClass = highLightClass + ' highlightColumn'
              }       
            
              if( highlight.house.type === 'square' &&  highlight.house.id === cell.squareID){
-               highLightClass = highLightClass + ' ' + 'highlightSquare'
+               highLightClass = highLightClass + ' highlightSquare'
              }  
            }            
         }

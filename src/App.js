@@ -89,13 +89,13 @@ class App extends Component {
     }
 
     if(step.type === 'naked'){
-      let colors = [1,2,3,4,5,6,7,8,9]
+      //let colors = [1,2,3,4,5,6,7,8,9]
       for( let id of step.ids){
         boxClasses[id] = ' targetCell '
       }
       ruleOut = this.state.grid[step.house.type][step.house.id].cells
       .filter( v => v.digit === 0) //unused
-      .filter( v => step.ids.indexOf(v.id) == -1)  // not in naked
+      .filter( v => step.ids.indexOf(v.id) === -1)  // not in naked
       .filter( v => [...v.possibilities].some(p=> [...step.digits].includes(p))) // has digits as possibles
       .map(v=>v.id) 
 

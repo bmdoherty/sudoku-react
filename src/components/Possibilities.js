@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 export default class Possibilities extends React.Component {
-    constructor(props) {
-        super(props);
-    } 
+    // constructor(props) {
+    //     super(props);
+    // } 
 
     exclude(cell, highlight,  possibility){
         let classes = ''

@@ -302,7 +302,7 @@ export default class Grid {
             Grid.addToImpossibilities(v, end.mustBe)
         })
 
-        return true
+        return excluded
     }; 
 
     excludeBasedOnLockedCandidate(lockedCandidate) {
@@ -430,7 +430,7 @@ export default class Grid {
                     break;
             }
             nextStep = this.next()
-            i++
+            i = i +1
         }
         
         return this
