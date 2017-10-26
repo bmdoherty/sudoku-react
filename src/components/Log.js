@@ -1,0 +1,18 @@
+import React, { Component } from 'react';
+import LogItems from './LogItems';
+
+export default class Log extends React.Component {
+  constructor(props, context) {
+    super(props, context)
+  }
+
+  render() {
+    const { items } = this.props
+
+    return (
+      <div className="todoListMain">
+        <LogItems items={items}/>
+      </div>
+    )
+  }
+}
