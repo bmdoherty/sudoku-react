@@ -23,7 +23,7 @@ export default class Possibilities extends React.Component {
         return (
             <div className='possibilities'>
                 {possibilities.map( possibility => {
-                    return <span className={`${this.exclude(cell, highlight, possibility)}`}>{possibility}</span>
+                    return <span className={`${this.exclude(cell, highlight, possibility)}`} key={cell.id + '-' + possibility} >{possibility}</span>
                 })}
             </div>
         );
