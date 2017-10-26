@@ -69,7 +69,7 @@ td { border: solid medium gray; height: 2.4em; width: 2.4em; text-align: left; p
 }
 
 .locked {
-  background-color: #ddd;
+  /* background-color: #ddd; */
 
 }
 
@@ -132,13 +132,13 @@ td { border: solid medium gray; height: 2.4em; width: 2.4em; text-align: left; p
   border-bottom-width: 2px;
 }
 .highlightRow{    
-  background-color: rgba(254,153,41, 0.5);
+  background-color: rgba(209, 194, 147, 0.5);
 }
 .highlightColumn{    
-  background-color: rgba(254,153,41, 0.5);
+  background-color: rgba(209, 194, 147, 0.5);
 }
 .highlightSquare{    
-  background-color: rgba(254,153,41, 0.5);
+  background-color: rgba(209, 194, 147, 0.5);
 }
 
 #cell-27, #cell-28, #cell-29, #cell-30, #cell-31, #cell-32, #cell-33, #cell-34, #cell-35{    
@@ -1139,7 +1139,7 @@ td { border: solid medium gray; height: 2.4em; width: 2.4em; text-align: left; p
   background-color: rgba(254,196,79, 0.5);
 }
 .highlight5 {
-  background-color: rgba(254,153,41, 0.5);
+  background-color: rgba(209, 194, 147, 0.5);
 }
 .highlight6 {
   background-color: rgba(236,112,20, 0.5);

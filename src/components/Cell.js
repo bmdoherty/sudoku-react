@@ -9,6 +9,7 @@ export default class Cell extends React.Component {
     isHighlighted(cell, highlight){
         let highLightClass = ''
 
+
         if( highlight.on){
           if( highlight.cell){
          // if(highlight.type == 'nakedSingle'){
@@ -75,6 +76,11 @@ export default class Cell extends React.Component {
               highLightClass = highLightClass +  ' highlight2 ' 
             }            
           }
+          else{
+            if(cell.locked){
+              highLightClass = highLightClass +  '  locked '
+            }
+          }
 
         return highLightClass
       }    
@@ -118,13 +124,10 @@ export default class Cell extends React.Component {
     render() {
         const { cell, highlight} = this.props
 
-        let locked = ''
-        if(cell.locked){
-          locked = 'locked'
-        }
+
  
         return (
-            <div className={`box ${locked} ${this.isHighlighted(cell, highlight)}`} id={`cell-${cell.id}`} key={cell.id}>
+            <div className={`box ${this.isHighlighted(cell, highlight)}`} id={`cell-${cell.id}`} key={cell.id}>
                 <Possibilities cell={cell} possibilities={[...cell.possibilities]} highlight={highlight} />
                 {/* <div className='possibilities'>{cell.possibilities}</div> */}
                 <div className={this.digitClasses(cell, highlight)}>
