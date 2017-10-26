@@ -1,5 +1,5 @@
 env:
-  CODECLIMATE_REPO_TOKEN: $CODECLIMATE_REPO_TOKEN
+  #CODECLIMATE_REPO_TOKEN: $CODECLIMATE_REPO_TOKEN
 language: node_js
 node_js:
   - "stable"
