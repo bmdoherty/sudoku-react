@@ -30,6 +30,7 @@ class App extends Component {
   componentDidMount() {
     // 043080250\n600000000\n000001094\n900004070\n000608000\n010200003\n820500000\n000000005\n034090710
     // 300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006
+    //let text = '000000000\n007020400\n008504900\n009000800\n510080027\n000203000\n000000000\n435000196\n180000054'
     let text = '300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006'
     let grid = new Grid(text)
 
@@ -64,23 +65,45 @@ class App extends Component {
     if(step.type === 'hiddenSingle'){
       let colors = [1,2,3,4,5,6,7,8,9]
       let unfilledCellsInHouse = this.state.grid[step.house.type][step.house.id].cells.filter( v => v.digit === 0).filter(v=> v.id !== cell.id)
+      let nextColor
+      let color
+      let bgcolor 
       for( let unfilledCell of unfilledCellsInHouse){
         let seenByCells = [...unfilledCell.canSee].filter( v => v.digit === step.digit)
         let seenBy 
 
         let seenInSquare = seenByCells.filter( v=> v.squareID === unfilledCell.squareID)
         if(seenInSquare.length){
+        
             seenBy = seenInSquare[0] 
-            digitClasses[seenBy.id] = digitClasses[seenBy.id] ? digitClasses[seenBy.id] : ' color' + colors.shift()
-            digitClasses[unfilledCell.id] = digitClasses[seenBy.id]
+            if(!digitClasses[seenBy.id]){
+              nextColor = colors.shift()
+              color = ' color' + nextColor
+              bgcolor = ' bgcolor' + nextColor
+              digitClasses[seenBy.id] = color + bgcolor
+              digitClasses[unfilledCell.id] = ' color' + nextColor              
+            } else {
+              digitClasses[seenBy.id] = digitClasses[seenBy.id] 
+              digitClasses[unfilledCell.id] = ' color' + nextColor              
+            }
+
+
         }
         else{
           
           let seenOutsideSquare = seenByCells.filter( v=> v.squareID !== cell.squareID)
           if(seenOutsideSquare.length){
             seenBy = seenOutsideSquare[0] 
-            digitClasses[seenBy.id] = digitClasses[seenBy.id] ? digitClasses[seenBy.id] : ' color' + colors.shift()
-            digitClasses[unfilledCell.id] = digitClasses[seenBy.id]
+            if(!digitClasses[seenBy.id]){
+              nextColor = colors.shift()
+              color = ' color' + nextColor
+              bgcolor = ' bgcolor' + nextColor
+              digitClasses[seenBy.id] = color + bgcolor
+              digitClasses[unfilledCell.id] = ' color' + nextColor              
+            } else {
+              digitClasses[seenBy.id] = digitClasses[seenBy.id] 
+              digitClasses[unfilledCell.id] = ' color' + nextColor              
+            }
           }  
         }
       

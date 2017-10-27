@@ -32,7 +32,7 @@ td { border: solid medium gray; height: 2.4em; width: 2.4em; text-align: left; p
   top: 0;
   left: 0;
   z-index: 1;
-  padding:1px;
+  padding-left: 4px;
   
 }
 
@@ -52,9 +52,10 @@ td { border: solid medium gray; height: 2.4em; width: 2.4em; text-align: left; p
   justify-content:center;
   align-content:center;
   color: #000;
-  font-size: 3vw;
+  font-size: 2.8vw;
   width: 100%;
   padding-top: 13%;
+  min-height: 4.6vw;
 }
 
 
@@ -1153,32 +1154,59 @@ td { border: solid medium gray; height: 2.4em; width: 2.4em; text-align: left; p
 .color1 {
   color: rgba(31,120,180, 0.9);
 }
+.bgcolor1 {
+  background-color: rgba(31,120,180, 0.15);
+}
 .color2 {
   color: rgba(51,160,44, 0.9);
+}
+.bgcolor2 {
+  background-color: rgba(51,160,44, 0.15);
 }
 .color3 {
   color: rgba(227,26,28, 0.9);
 }
+.bgcolor3 {
+  background-color: rgba(227,26,28, 0.15);
+}
 .color4 {
-  color: rgba(106,61,15, 0.9);
+  color: rgba(106,61,154, 0.9);
+}
+.bgcolor4 {
+  background-color: rgba(106,61,154, 0.15);
 }
 .color5 {
-  color: rgba(106,61,154, 0.5);
+  color: rgba(06,61,154, 0.5);
+}
+.bgcolor5 {
+  background-color: rgba(106,61,154, 0.1);
 }
 .color6 {
   color: rgba(177,89,40, 0.5);
 }
+.bgcolor6 {
+  background-color: rgba(177,89,40, 0.1);
+}
 .color7 {
   color: rgba(204,76,2, 0.5);
+}
+.bgcolor7 {
+  background-color: rgba(204,76,2, 0.1);
 }
 .color8 {
   color: rgba(153,52,4, 0.5);
 }
+.bgcolor8 {
+  background-color: rgba(153,52,4, 0.1);
+}
 .color9 {
   color: rgba(153,52,4, 0.5);
 }
+.bgcolor8 {
+  background-color: rgba(153,52,4, 0.1);
+}
 .targetCell {
-  background-color: rgba(229,245,224, 0.9);
+  background-color: rgba(252, 253, 252, 0.9);
 
 }
 

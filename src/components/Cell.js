@@ -21,17 +21,17 @@ export default class Cell extends React.Component {
           }
     
           if(highlight.type === 'nakedSingle'){
-            if( highlight.cell.column === cell.column ){
-              highLightClass = highLightClass + ' highlightColumn'
-            }    
+            // if( highlight.cell.column === cell.column ){
+            //   highLightClass = highLightClass + ' highlightColumn'
+            // }    
         
-            if(  highlight.cell.row === cell.row ){
-              highLightClass = highLightClass + ' highlightRow'
-            }       
+            // if(  highlight.cell.row === cell.row ){
+            //   highLightClass = highLightClass + ' highlightRow'
+            // }       
           
-            if(  highlight.cell.square === cell.square ){
-              highLightClass = highLightClass + ' highlightSquare'
-            }  
+            // if(  highlight.cell.square === cell.square ){
+            //   highLightClass = highLightClass + ' highlightSquare'
+            // }  
           }            
         
 
