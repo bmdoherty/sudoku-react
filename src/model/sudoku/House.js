@@ -22,15 +22,25 @@ class House {
             if( cell.possibilities.size === 1){
                 let digit = cell.possibilities.values().next().value
                 let cells = [...cell.canSee]
-                let used = {}
+                let used = []
+
+                // all used in this cells houses
+                for(let house of ['row','column','square']){
+                    let houseID = cell[house+'ID']
+                    let houseCells = this.grid[house][houseID].cells
+                    if(houseCells.filter(v => v.digit > 0).length === 8){
+                        used = houseCells.filter(v => v.digit > 0).map( v=>v.id)
+                        return {'id':cell.id, 'digit':digit, 'used':used, 'type':'nakedSingle'}
+                    }
+                }
+
                 for(let i=1; i<=9; i++){
-                    if(i===digit){
-                        used[i] = [cell.id]
+                    if(i !== digit){
+                        let seenBy = cells.filter( v=> v.digit === i).map( v=>v.id).map(Number)[0]
+                        if(!isNaN(seenBy)){
+                            used.push(seenBy)
+                        }
                     }
-                    else{
-                        used[i] = cells.filter( v=> v.digit === i).map( v=>v.id)
-                    }
-                    
                 }
                 return {'id':cell.id, 'digit':digit, 'used':used, 'type':'nakedSingle'}
             }               

@@ -38,6 +38,9 @@ class App extends Component {
   }
 
   highLight() {
+    if(this.state.highLight.on){
+      return
+    }
     let step = this.state.grid.next()
     let cell = this.state.grid.cells[step.id]
     let digitClasses = {}
@@ -48,6 +51,7 @@ class App extends Component {
     let squares = []
     let rows = []
     let columns = []
+    let colors = [1,2,3,4,5,6,7,8,9]
 
     if(cell){
       item = {text:`${step.type}: The cell at ${cell.row},${cell.column},${cell.square} must be ${step.digit} ${JSON.stringify(step)}`, key:cell.id}  
@@ -57,13 +61,22 @@ class App extends Component {
       ruleOut = [...cell.canSee].filter(cell => [...cell.possibilities].includes(step.digit) ).map(v=>v.id)
     } else {
       item = {text:`${JSON.stringify(step)}`, key:this.state.step}
+
     }
     
     let digits = [step.digit]
 
+    if(step.type === 'nakedSingle' && step.used.length === 8){
+      for(let i=0; i<8; i++){
+        let cell = this.state.grid.cells[step.used[i]]
+        boxClasses[cell.id] = boxClasses[cell.id] + ' bgcolor' + cell.digit
+        digitClasses[cell.id] = digitClasses[cell.id] + ' color' + cell.digit
+      }
+    }
+
     // hidden
     if(step.type === 'hiddenSingle'){
-      let colors = [1,2,3,4,5,6,7,8,9]
+      
       let unfilledCellsInHouse = this.state.grid[step.house.type][step.house.id].cells.filter( v => v.digit === 0).filter(v=> v.id !== cell.id)
       let nextColor
       let color

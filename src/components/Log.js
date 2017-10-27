@@ -11,7 +11,7 @@ export default class Log extends React.Component {
 
     return (
       <div className="todoListMain">
-        <LogItems items={items}/>
+        <LogItems items={items} key='logItems'/>
       </div>
     )
   }
