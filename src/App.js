@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import Grid from './model/sudoku/Grid';
+import isValid from './model/sudoku/isValid';
 
 import HighlightButton from './components/HighlightButton';
 import ApplyButton from './components/ApplyButton';
@@ -32,7 +33,22 @@ class App extends Component {
     // 300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006
     //let text = '000000000\n007020400\n008504900\n009000800\n510080027\n000203000\n000000000\n435000196\n180000054'
     let text = '300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006'
-    let grid = new Grid(text)
+    let grid 
+    if(window.location.hash) {
+      let hash = window.location.hash.substring(1)
+
+      hash = hash.replace(/(.{9})/g,"$1\n").replace(/^\s\s*/, '').replace(/\s\s*$/, '')
+
+      if( isValid(hash).isValid ){
+        grid = new Grid(hash)
+      }
+      else {
+        grid = new Grid(text)
+      }      
+    }
+    else {
+      grid = new Grid(text)
+    }    
 
     this.setState({ grid: grid }); 
   }
