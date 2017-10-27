@@ -26,32 +26,41 @@ class App extends Component {
     // This binding is necessary to make `this` work in the callback
     this.highLight = this.highLight.bind(this);
     this.apply = this.apply.bind(this);
+    this.loadGridFromHash = this.loadGridFromHash.bind(this);
+  }
+
+  loadGridFromHash() {
+    if(window.location.hash) {
+      let hash = window.location.hash.substring(1)
+      hash = hash.replace(/(.{9})/g,"$1\n").replace(/^\s\s*/, '').replace(/\s\s*$/, '')
+      let grid
+  
+      if( isValid(hash).isValid ){
+        grid = new Grid(hash)
+      }
+      else {
+        let text = '300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006'
+        grid = new Grid(text)
+      }    
+  
+      this.setState({ grid: grid });   
+    }
   }
 
   componentDidMount() {
     // 043080250\n600000000\n000001094\n900004070\n000608000\n010200003\n820500000\n000000005\n034090710
     // 300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006
     //let text = '000000000\n007020400\n008504900\n009000800\n510080027\n000203000\n000000000\n435000196\n180000054'
-    let text = '300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006'
-    let grid 
-    if(window.location.hash) {
-      let hash = window.location.hash.substring(1)
-
-      hash = hash.replace(/(.{9})/g,"$1\n").replace(/^\s\s*/, '').replace(/\s\s*$/, '')
-
-      if( isValid(hash).isValid ){
-        grid = new Grid(hash)
-      }
-      else {
-        grid = new Grid(text)
-      }      
+    let self = this
+    if("onhashchange" in window) {
+        window.onhashchange = function(){
+          self.loadGridFromHash()
+        }
     }
-    else {
-      grid = new Grid(text)
-    }    
-
-    this.setState({ grid: grid }); 
+    this.loadGridFromHash()
   }
+
+
 
   highLight() {
     if(this.state.highLight.on){
