@@ -34,8 +34,13 @@ class App extends Component {
       let hash = window.location.hash.substring(1)
       hash = hash.replace(/(.{9})/g,"$1\n").replace(/^\s\s*/, '').replace(/\s\s*$/, '')
       let grid
-  
-      if( isValid(hash).isValid ){
+
+      let v = isValid(hash) 
+      this.setState({ items: [] }); 
+      this.state.items.unshift({text:`${v.message}`}) 
+      if( v.isValid ){
+ 
+        
         grid = new Grid(hash)
       }
       else {
