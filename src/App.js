@@ -36,11 +36,11 @@ class App extends Component {
       let grid
 
       let v = isValid(hash) 
-      this.setState({ items: [] }); 
-      this.state.items.unshift({text:`${v.message}`}) 
-      if( v.isValid ){
- 
-        
+      this.setState({ items: [{text:`${v.message}`}] }); 
+
+      this.setState({ highLight: {on:false} }); 
+
+      if( v.isValid ){  
         grid = new Grid(hash)
       }
       else {
