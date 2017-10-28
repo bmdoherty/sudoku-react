@@ -17,7 +17,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      step: 0,
+      step: 1,
       grid: new Grid('000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000'),
       highLight: {used:[]},
       items: [],
@@ -42,6 +42,7 @@ class App extends Component {
 
 
       let v = isValid(hash) 
+      this.setState({ step: 1});
       this.setState({ items: [{text:`${v.message}`, key:'grid-info'}] }); 
 
       this.setState({ highLight: {on:false} }); 
@@ -51,7 +52,11 @@ class App extends Component {
         grid = new Grid(hash)
       }
       else {
-        
+        this.setState({ step: 1});
+        this.state.items.unshift({text:`Using default sudoku instead`, key:'grid-info-d'}) 
+        let items = this.state.items
+        this.setState({ items: items});
+             
         let text = '300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006'
         grid = new Grid(text)
       }    
@@ -59,6 +64,7 @@ class App extends Component {
       this.setState({ grid: grid });         
     }
     else {
+      this.setState({ step: 1});
       this.setState({ items: [{text:`Default sudoku`, key:'grid-info'}] }); 
       let text = '043080250\n600000000\n000001094\n900004070\n000608000\n010200003\n820500000\n000000005\n034090710'
       grid = new Grid(text)
