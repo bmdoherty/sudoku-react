@@ -51,6 +51,7 @@ class App extends Component {
         grid = new Grid(hash)
       }
       else {
+        
         let text = '300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006'
         grid = new Grid(text)
       }    
@@ -58,6 +59,7 @@ class App extends Component {
       this.setState({ grid: grid });         
     }
     else {
+      this.setState({ items: [{text:`Default sudoku`, key:'grid-info'}] }); 
       let text = '043080250\n600000000\n000001094\n900004070\n000608000\n010200003\n820500000\n000000005\n034090710'
       grid = new Grid(text)
     }    
