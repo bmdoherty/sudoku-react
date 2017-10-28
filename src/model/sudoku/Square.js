@@ -22,8 +22,9 @@ export default class Square extends House{
 
                     if(possibleCells.length < total.length){
                         let house = {'type':'row', 'id':rowID}
+                        let locked = {'type':'square', 'id':this.id}
                         let ids = possibleCells.map( v => v.id)
-                        return {'ids':ids, 'digit':digit, 'house':house, 'type':'lockedCandidate'}  
+                        return {'ids':ids, 'digit':digit, 'house':house, 'locked':locked, 'type':'lockedCandidate'}  
                     }
                 }   
            
@@ -33,8 +34,9 @@ export default class Square extends House{
                     
                     if(possibleCells.length < total.length){                       
                         let house = {'type':'column', 'id':columnID}
+                        let locked = {'type':'square', 'id':this.id}
                         let ids = possibleCells.map( v => v.id)
-                        return {'ids':ids, 'digit':digit, 'house':house, 'type':'lockedCandidate'} 
+                        return {'ids':ids, 'digit':digit, 'house':house, 'locked':locked, 'type':'lockedCandidate'} 
                     }
                 }               
             }                  

@@ -23,8 +23,9 @@ export default class Row extends House {
                     
                     if(possibleCells.length < total.length){                     
                         let house = {'type':'square', 'id':squareID}
+                        let locked = {'type':'row', 'id':this.id}
                         let ids = possibleCells.map( v => v.id)
-                        return {'ids':ids, 'digit':digit, 'house':house, 'type':'lockedCandidate'} 
+                        return {'ids':ids, 'digit':digit, 'house':house, 'locked':locked, 'type':'lockedCandidate'} 
                     }
                 }                 
             }                  

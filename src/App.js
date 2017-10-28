@@ -58,7 +58,7 @@ class App extends Component {
       this.setState({ grid: grid });         
     }
     else {
-      let text = '300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006'
+      let text = '043080250\n600000000\n000001094\n900004070\n000608000\n010200003\n820500000\n000000005\n034090710'
       grid = new Grid(text)
     }    
 
@@ -115,6 +115,7 @@ class App extends Component {
     let rows = []
     let columns = []
     let colors = [1,2,3,4,5,6,7,8,9]
+    let locked
 
     if(cell){
       item = {text:`${step.type}: The cell at ${cell.row},${cell.column},${cell.square} must be ${step.digit} ${JSON.stringify(step)}`, key:cell.id}  
@@ -167,7 +168,7 @@ class App extends Component {
         }
         else{
           
-          let seenOutsideSquare = seenByCells.filter( v=> v.squareID !== cell.squareID)
+          let seenOutsideSquare = seenByCells.filter( v=> v.squareID !== unfilledCell.squareID)
           if(seenOutsideSquare.length){
             seenBy = seenOutsideSquare[0] 
             if(!digitClasses[seenBy.id]){
@@ -205,7 +206,61 @@ class App extends Component {
       columns = cells.map( v=> `${v.column}`).join(' ')
       squares = cells.map( v=> `${v.square}`).join(' ')
 
-    }    
+    } 
+    
+    if(step.type === 'lockedCandidate'){
+      let colors = [1,2,3,4,5,6,7,8,9]
+
+      for( let id of step.ids){
+        boxClasses[id] = ' targetCell '
+      }
+      //
+      let lockedHouse = this.state.grid[step.locked.type][step.locked.id]
+
+      let unfilledCellsInLocked = lockedHouse.cells
+      .filter( v => v.digit === 0)
+      .filter( v => !step.ids.includes(v.id))
+
+      
+      let nextColor
+      let color
+      let bgcolor 
+      for( let unfilledCell of unfilledCellsInLocked){
+        let seenByCells = [...unfilledCell.canSee].filter( v => v.digit === step.digit)
+        let seenBy = seenByCells[0] 
+
+        if(!digitClasses[seenBy.id]){
+          nextColor = colors.shift()
+          color = ' color' + nextColor
+          bgcolor = ' bgcolor' + nextColor
+          digitClasses[seenBy.id] = color + bgcolor
+          digitClasses[unfilledCell.id] = ' color' + nextColor              
+        } else {
+          digitClasses[seenBy.id] = digitClasses[seenBy.id] 
+          digitClasses[unfilledCell.id] = ' color' + nextColor              
+        }
+           
+        cellContent[unfilledCell.id] = 'X'
+
+      }
+
+      //      
+      ruleOut = this.state.grid[step.house.type][step.house.id].cells
+      .filter( v => v.digit === 0) //unused
+      .filter( v => step.ids.indexOf(v.id) === -1)  // not in naked
+      .filter( v => [...v.possibilities].includes(step.digit)) // has digits as possibles
+      .map(v=>v.id) 
+
+      digits = [step.digit]
+
+      locked = step.locked
+
+      let cells = this.state.grid[step.house.type][step.house.id].cells.filter( v=> step.ids.includes(v.id))
+      rows = cells.map( v=> `${v.row}`).join(' ')
+      columns = cells.map( v=> `${v.column}`).join(' ')
+      squares = cells.map( v=> `${v.square}`).join(' ')
+
+    }        
 
 
     let highLight = {
@@ -218,6 +273,7 @@ class App extends Component {
       ruleOut: ruleOut,
       type:step.type,
       house:step.house,
+      locked:locked,
       boxClasses: boxClasses,
       digitClasses: digitClasses,
       cellContent: cellContent
