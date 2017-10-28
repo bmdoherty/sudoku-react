@@ -5,6 +5,7 @@ import isValid from './model/sudoku/isValid';
 
 import HighlightButton from './components/HighlightButton';
 import ApplyButton from './components/ApplyButton';
+import AutoplayButton from './components/AutoplayButton'
 import Log from './components/Log.js';
 import Cell from './components/Cell.js';
 
@@ -19,37 +20,49 @@ class App extends Component {
       step: 0,
       grid: new Grid('000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000'),
       highLight: {used:[]},
-      items: []
+      items: [],
+      autoplay:false
     };
 
 
     // This binding is necessary to make `this` work in the callback
-    this.highLight = this.highLight.bind(this);
+    //this.highLight = this.highLight.bind(this);
     this.apply = this.apply.bind(this);
+    this.autoplay = this.autoplay.bind(this);
+    this.toggleAutoplay = this.toggleAutoplay.bind(this);
     this.loadGridFromHash = this.loadGridFromHash.bind(this);
   }
 
   loadGridFromHash() {
+    let grid
+
     if(window.location.hash) {
       let hash = window.location.hash.substring(1)
       hash = hash.replace(/(.{9})/g,"$1\n").replace(/^\s\s*/, '').replace(/\s\s*$/, '')
-      let grid
+
 
       let v = isValid(hash) 
       this.setState({ items: [{text:`${v.message}`}] }); 
 
       this.setState({ highLight: {on:false} }); 
 
-      if( v.isValid ){  
+      if( hash.length && v.isValid ){  
+
         grid = new Grid(hash)
       }
       else {
         let text = '300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006'
         grid = new Grid(text)
       }    
-  
-      this.setState({ grid: grid });   
+      
+      this.setState({ grid: grid });         
     }
+    else {
+      let text = '300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006'
+      grid = new Grid(text)
+    }    
+
+    this.setState({ grid: grid });       
   }
 
   componentDidMount() {
@@ -63,14 +76,34 @@ class App extends Component {
         }
     }
     this.loadGridFromHash()
+
+    console.log('componentDidMount')
+    //if(this.state.autoplay){
+      this.timerID = setInterval(
+        () => this.autoplay(),
+        1000
+      )  
+    // }
+    // else{
+    //   clearInterval(this.timerID);      
+    // }
+
+
+
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
 
-
-  highLight() {
+  highLight = () => {
     if(this.state.highLight.on){
       return
+    }   
+    if(!this.state.grid.next()){
+      return
     }
+
     let step = this.state.grid.next()
     let cell = this.state.grid.cells[step.id]
     let digitClasses = {}
@@ -194,13 +227,32 @@ class App extends Component {
     this.state.items.unshift(item)
   }
 
-  apply() {
+  apply = () => {
+    if(!this.state.grid.next()){
+      this.setState({ 
+        autoplay: false
+      }); 
+      return
+    }    
     this.setState({ highLight: {on:false} }); 
 
     
     this.state.grid.apply(this.state.grid.next())
 
     this.setState({ step: this.state.step+1 }); 
+  }
+
+  toggleAutoplay = () => {
+    this.setState({ 
+      autoplay: !this.state.autoplay
+    }); 
+  }
+
+  autoplay = () => {
+    if(this.state.autoplay){
+      this.highLight()
+      setTimeout(this.apply, 700);
+    }
   }
 
   showSquare(square){
@@ -230,9 +282,6 @@ class App extends Component {
 
     const { grid, items } = this.state
     let self = this;
-
-    console.log('grid render')
-    
  
     return (
       <div className="App">
@@ -309,6 +358,8 @@ class App extends Component {
           <HighlightButton action={this.highLight} step={this.state.step} />
 
           <ApplyButton action={this.apply} step={this.state.step} />
+
+          <AutoplayButton action={this.toggleAutoplay}/>
 
           <Log items={items}/>
         </div>
