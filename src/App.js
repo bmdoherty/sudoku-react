@@ -42,7 +42,7 @@ class App extends Component {
 
 
       let v = isValid(hash) 
-      this.setState({ items: [{text:`${v.message}`}] }); 
+      this.setState({ items: [{text:`${v.message}`, key:'grid-info'}] }); 
 
       this.setState({ highLight: {on:false} }); 
 
@@ -77,7 +77,7 @@ class App extends Component {
     }
     this.loadGridFromHash()
 
-    console.log('componentDidMount')
+
     //if(this.state.autoplay){
       this.timerID = setInterval(
         () => this.autoplay(),
@@ -118,13 +118,13 @@ class App extends Component {
     let locked
 
     if(cell){
-      item = {text:`${step.type}: The cell at ${cell.row},${cell.column},${cell.square} must be ${step.digit} ${JSON.stringify(step)}`, key:cell.id}  
+      item = {text:`${step.type}: The cell at ${cell.row},${cell.column},${cell.square} must be ${step.digit} \n ${JSON.stringify(step)} \n\n`, key:`${cell.id}-${step.type}-${this.state.step}`}  
       rows = [cell.row]
       columns = [cell.column]
       squares = [cell.square]
       ruleOut = [...cell.canSee].filter(cell => [...cell.possibilities].includes(step.digit) ).map(v=>v.id)
     } else {
-      item = {text:`${JSON.stringify(step)}`, key:this.state.step}
+      item = {text:`${step.type} \n ${JSON.stringify(step)} \n\n`, key:this.state.step}
 
     }
     

@@ -1245,6 +1245,9 @@ td { border: solid medium gray; height: 2.4em; width: 2.4em; text-align: left; p
   color: rgba(227,26,28, 1);
 }
 
+.theList{
+  white-space: pre-line;
+}
 /* 
 
 
