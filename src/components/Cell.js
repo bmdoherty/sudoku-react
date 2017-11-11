@@ -12,15 +12,13 @@ export default class Cell extends React.Component {
 
         if( highlight.on){
           if( highlight.cell){
-         // if(highlight.type == 'nakedSingle'){
 
-          //}
     
           if( highlight.cell.id === cell.id ){
             highLightClass = 'targetCell' 
           }
     
-          if(highlight.type === 'nakedSingle'){
+          if(highlight.strategy.type === 'NakedSingle'){
             // if( highlight.cell.column === cell.column ){
             //   highLightClass = highLightClass + ' highlightColumn'
             // }    
@@ -35,7 +33,7 @@ export default class Cell extends React.Component {
           }            
         
 
-          if(highlight.type === 'hiddenSingle'){
+          if(highlight.strategy.type === 'HiddenSingle'){
            // console.log(highlight)
             if( highlight.house.type === 'row' &&  highlight.house.id === cell.rowID){
               highLightClass = highLightClass + ' highlightRow'
@@ -51,7 +49,7 @@ export default class Cell extends React.Component {
           }  
         }
 
-          if(highlight.type === 'naked'){
+          if(highlight.strategy.type === 'Naked'){
             
              if( highlight.house.type === 'row' &&  highlight.house.id === cell.rowID){
                highLightClass = highLightClass + ' highlightRow'
@@ -66,7 +64,7 @@ export default class Cell extends React.Component {
              }  
            }  
            
-           if( highlight.type === 'lockedCandidate'){
+           if( highlight.strategy.type === 'LockedCandidate'){
             
              if( (highlight.house.type === 'row' &&  highlight.house.id === cell.rowID) || (highlight.locked.type === 'row' &&  highlight.locked.id === cell.rowID)){
                highLightClass = highLightClass + ' highlightRow'

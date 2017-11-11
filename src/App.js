@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import Grid from './model/sudoku/Grid';
-import isValid from './model/sudoku/isValid';
+import Grid from 'sudoku/model//Grid';
+import isValid from 'sudoku/model/isValid';
 
 import HighlightButton from './components/HighlightButton';
 import ApplyButton from './components/ApplyButton';
@@ -113,6 +113,7 @@ class App extends Component {
     }
 
     let step = this.state.grid.next()
+
     let cell = this.state.grid.cells[step.id]
     let digitClasses = {}
     let boxClasses = {}    
@@ -126,19 +127,19 @@ class App extends Component {
     let locked
 
     if(cell){
-      item = {text:`${step.type}: The cell at ${cell.row},${cell.column},${cell.square} must be ${step.digit} \n ${JSON.stringify(step)} \n\n`, key:`${cell.id}-${step.type}-${this.state.step}`}  
+      item = {text:`${step.strategy.type}: The cell at ${cell.row},${cell.column},${cell.square} must be ${step.digit} \n`, key:`${cell.id}-`}  
       rows = [cell.row]
       columns = [cell.column]
       squares = [cell.square]
       ruleOut = [...cell.canSee].filter(cell => [...cell.possibilities].includes(step.digit) ).map(v=>v.id)
     } else {
-      item = {text:`${step.type} \n ${JSON.stringify(step)} \n\n`, key:this.state.step}
+      item = {text:`${step.strategy.type}${step.length?` ${step.length}`:``} \n`, key:this.state.step}
 
     }
     
     let digits = [step.digit]
 
-    if(step.type === 'nakedSingle' && step.used.length === 8){
+    if(step.strategy.type === 'NakedSingle' && step.used.length === 8){
       for(let i=0; i<8; i++){
         let cell = this.state.grid.cells[step.used[i]]
         boxClasses[cell.id] = boxClasses[cell.id] + ' bgcolor' + cell.digit
@@ -147,7 +148,7 @@ class App extends Component {
     }
 
     // hidden
-    if(step.type === 'hiddenSingle'){
+    if(step.strategy.type === 'HiddenSingle'){
       
       let unfilledCellsInHouse = this.state.grid[step.house.type][step.house.id].cells.filter( v => v.digit === 0).filter(v=> v.id !== cell.id)
       let nextColor
@@ -196,34 +197,35 @@ class App extends Component {
       }
     }
 
-    if(step.type === 'naked'){
+    if(step.strategy.type === 'Naked'){
       //let colors = [1,2,3,4,5,6,7,8,9]
-      for( let id of step.ids){
+      for( let id of step.id){
         boxClasses[id] = ' targetCell '
       }
       ruleOut = this.state.grid[step.house.type][step.house.id].cells
       .filter( v => v.digit === 0) //unused
-      .filter( v => step.ids.indexOf(v.id) === -1)  // not in naked
+      .filter( v => step.id.indexOf(v.id) === -1)  // not in naked
       .filter( v => [...v.possibilities].some(p=> [...step.digits].includes(p))) // has digits as possibles
       .map(v=>v.id) 
 
       digits = [...step.digits]
 
-      let cells = this.state.grid[step.house.type][step.house.id].cells.filter( v=> step.ids.includes(v.id))
+      let cells = this.state.grid[step.house.type][step.house.id].cells.filter( v=> step.id.includes(v.id))
       rows = cells.map( v=> `${v.row}`).join(' ')
       columns = cells.map( v=> `${v.column}`).join(' ')
       squares = cells.map( v=> `${v.square}`).join(' ')
 
     } 
     
-    if(step.type === 'lockedCandidate'){
+    if(step.strategy.type === 'LockedCandidate'){
+      console.log(step)
       let colors = [1,2,3,4,5,6,7,8,9]
 
       for( let id of step.ids){
         boxClasses[id] = ' targetCell '
       }
       //
-      let lockedHouse = this.state.grid[step.locked.type][step.locked.id]
+      let lockedHouse = this.state.grid[step.house.type][step.house.id]
 
       let unfilledCellsInLocked = lockedHouse.cells
       .filter( v => v.digit === 0)
@@ -279,8 +281,9 @@ class App extends Component {
       cell:cell,
       digits:digits,
       ruleOut: ruleOut,
-      type:step.type,
       house:step.house,
+      strategy:step.strategy,
+      length:step.length,
       locked:locked,
       boxClasses: boxClasses,
       digitClasses: digitClasses,
