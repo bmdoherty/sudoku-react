@@ -1,5 +1,3 @@
-import 'raf/polyfill';
-
 import React, { Component } from 'react';
 
 import Grid from './model/sudoku/model/Grid';
