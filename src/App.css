@@ -1242,7 +1242,13 @@ td { border: solid medium gray; height: 2.4em; width: 2.4em; text-align: left; p
 }
 
 .exclude {
-  color: rgba(227,26,28, 1);
+  color: rgba(252, 253, 252, 0.9);
+  background-color: rgba(227,26,28, 1);
+}
+
+.keep {
+  color: rgba(252, 253, 252, 0.9);
+  background-color: rgba(51,160,44, 0.9);
 }
 
 .theList{

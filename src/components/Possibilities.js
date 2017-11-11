@@ -9,9 +9,22 @@ export default class Possibilities extends React.Component {
         let classes = ''
 
         if( highlight.on){
-            if( highlight.ruleOut.includes(cell.id) && highlight.digits.includes(possibility)){
-                classes = 'exclude' 
+            if( highlight.hiddenCells.includes(cell.id) && !highlight.digits.includes(possibility)){
+                classes = classes + ' exclude' 
             }   
+            if( highlight.hiddenCells.includes(cell.id) && highlight.digits.includes(possibility)){
+                classes = classes + ' keep' 
+            }      
+
+            // rule out possibilities in house
+            if( highlight.ruleOut.includes(cell.id) && highlight.digits.includes(possibility)){
+                classes = classes + ' exclude' 
+            }   
+
+            // target cell keep
+            if( highlight.keep.includes(cell.id) && highlight.digits.includes(possibility)){
+                classes = classes + ' keep' 
+            }               
         }
     
         return classes

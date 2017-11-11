@@ -1,7 +1,9 @@
+import 'raf/polyfill';
+
 import React, { Component } from 'react';
 
-import Grid from 'sudoku/model//Grid';
-import isValid from 'sudoku/model/isValid';
+import Grid from './model/sudoku/model/Grid';
+import isValid from './model/sudoku/model/isValid';
 
 import HighlightButton from './components/HighlightButton';
 import ApplyButton from './components/ApplyButton';
@@ -120,11 +122,13 @@ class App extends Component {
     let cellContent = {}
     let item = {}
     let ruleOut = []
+    let keep = []
     let squares = []
     let rows = []
     let columns = []
     let colors = [1,2,3,4,5,6,7,8,9]
     let locked
+    let hiddenCells = []    
 
     if(cell){
       item = {text:`${step.strategy.type}: The cell at ${cell.row},${cell.column},${cell.square} must be ${step.digit} \n`, key:`${cell.id}-`}  
@@ -145,6 +149,10 @@ class App extends Component {
         boxClasses[cell.id] = boxClasses[cell.id] + ' bgcolor' + cell.digit
         digitClasses[cell.id] = digitClasses[cell.id] + ' color' + cell.digit
       }
+      keep = [step.id]
+    }else{
+      keep = [step.id]
+    
     }
 
     // hidden
@@ -193,8 +201,10 @@ class App extends Component {
           }  
         }
       
+        keep = [step.id]
         cellContent[unfilledCell.id] = 'X'
       }
+      
     }
 
     if(step.strategy.type === 'Naked'){
@@ -210,15 +220,17 @@ class App extends Component {
 
       digits = [...step.digits]
 
+
       let cells = this.state.grid[step.house.type][step.house.id].cells.filter( v=> step.id.includes(v.id))
       rows = cells.map( v=> `${v.row}`).join(' ')
       columns = cells.map( v=> `${v.column}`).join(' ')
       squares = cells.map( v=> `${v.square}`).join(' ')
 
+      keep = step.id
     } 
     
     if(step.strategy.type === 'LockedCandidate'){
-      console.log(step)
+
       let colors = [1,2,3,4,5,6,7,8,9]
 
       for( let id of step.ids){
@@ -251,15 +263,15 @@ class App extends Component {
         }
            
         cellContent[unfilledCell.id] = 'X'
-
       }
 
       //      
-      ruleOut = this.state.grid[step.house.type][step.house.id].cells
-      .filter( v => v.digit === 0) //unused
-      .filter( v => step.ids.indexOf(v.id) === -1)  // not in naked
-      .filter( v => [...v.possibilities].includes(step.digit)) // has digits as possibles
-      .map(v=>v.id) 
+      ruleOut = this.state.grid[step.locked.type][step.locked.id].cells
+      .filter( v => step.ids.indexOf(v.id) === -1 )
+      .filter( v => v.possibilities.has(step.digit))  
+      .map(v=>v.id)    
+      
+      keep = step.ids
 
       digits = [step.digit]
 
@@ -272,6 +284,48 @@ class App extends Component {
 
     }        
 
+    if(step.strategy.type === 'Hidden'){
+      //let colors = [1,2,3,4,5,6,7,8,9]
+      for( let id of step.id){
+        boxClasses[id] = ' targetCell '
+      }
+      ruleOut = []
+
+      digits = [...step.digits]
+
+      let cells = this.state.grid[step.house.type][step.house.id].cells.filter( v=> step.id.includes(v.id))
+      rows = cells.map( v=> `${v.row}`).join(' ')
+      columns = cells.map( v=> `${v.column}`).join(' ')
+      squares = cells.map( v=> `${v.square}`).join(' ')
+
+      hiddenCells = step.id
+    } 
+
+    
+    if(step.strategy.type === 'Fish'){
+      let targetCells = this.state.grid.cells.filter( v=> step.rows.includes(v.rowID)).filter( v=> step.columns.includes(v.columnID)).map(v=>v.id)
+      for( let id of targetCells){
+        boxClasses[id] = ' targetCell '
+      }
+
+      keep = targetCells
+
+      ruleOut = this.state.grid.cells
+        .filter( v => step.rows.indexOf(v.rowID) === -1 )
+        .filter( v => step.columns.indexOf(v.columnID) > -1 )
+        .filter( v => v.possibilities.has(step.digit) )
+        .map(v=>v.id)       
+
+
+
+      //return {'digit':digit, 'rows':fishRows, 'columns':fishColumns, 'length':fishRows.length, 'strategy':this}  
+
+      rows = step.rows.map(r=> `R${r+1}`).join(' ')
+      columns = step.columns.map(r=> `C${r+1}`).join(' ')
+
+      digits = [step.digit]
+  
+    } 
 
     let highLight = {
       on:true,
@@ -281,8 +335,11 @@ class App extends Component {
       cell:cell,
       digits:digits,
       ruleOut: ruleOut,
+      keep: keep,
       house:step.house,
+      ids:step.ids,
       strategy:step.strategy,
+      hiddenCells:hiddenCells,
       length:step.length,
       locked:locked,
       boxClasses: boxClasses,
