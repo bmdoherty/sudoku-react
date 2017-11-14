@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Solver, isValid} from 'sudoku/dist/sudoku.min.js';
+import {Solver, isValid} from 'sudoku';
 
 import HighlightButton from './components/HighlightButton';
 import ApplyButton from './components/ApplyButton';
