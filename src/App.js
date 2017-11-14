@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-
-import Grid from './model/sudoku/model/Grid';
-import isValid from './model/sudoku/model/isValid';
+import {Solver, isValid} from 'sudoku';
 
 import HighlightButton from './components/HighlightButton';
 import ApplyButton from './components/ApplyButton';
@@ -18,7 +16,7 @@ class App extends Component {
 
     this.state = {
       step: 1,
-      grid: new Grid('000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000'),
+      solver: new Solver('000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000'),
       highLight: {used:[]},
       items: [],
       autoplay:false
@@ -34,7 +32,7 @@ class App extends Component {
   }
 
   loadGridFromHash() {
-    let grid
+    let solver
 
     if(window.location.hash) {
       let hash = window.location.hash.substring(1)
@@ -49,7 +47,7 @@ class App extends Component {
 
       if( hash.length && v.isValid ){  
 
-        grid = new Grid(hash)
+        solver = new Solver(hash)
       }
       else {
         this.setState({ step: 1});
@@ -58,19 +56,19 @@ class App extends Component {
         this.setState({ items: items});
              
         let text = '300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006'
-        grid = new Grid(text)
+        solver = new Solver(text)
       }    
       
-      this.setState({ grid: grid });         
+      this.setState({ solver: solver });         
     }
     else {
       this.setState({ step: 1});
       this.setState({ items: [{text:`Default sudoku`, key:'grid-info'}] }); 
       let text = '043080250\n600000000\n000001094\n900004070\n000608000\n010200003\n820500000\n000000005\n034090710'
-      grid = new Grid(text)
+      solver = new Solver(text)
     }    
 
-    this.setState({ grid: grid });       
+    this.setState({ solver: solver });       
   }
 
   componentDidMount() {
@@ -108,13 +106,13 @@ class App extends Component {
     if(this.state.highLight.on){
       return
     }   
-    if(!this.state.grid.next()){
+    if(!this.state.solver.next()){
       return
     }
 
-    let step = this.state.grid.next()
+    let step = this.state.solver.next()
 
-    let cell = this.state.grid.cells[step.id]
+    let cell = this.state.solver.grid.cells[step.id]
     let digitClasses = {}
     let boxClasses = {}    
     let cellContent = {}
@@ -143,7 +141,7 @@ class App extends Component {
 
     if(step.strategy.type === 'NakedSingle' && step.used.length === 8){
       for(let i=0; i<8; i++){
-        let cell = this.state.grid.cells[step.used[i]]
+        let cell = this.state.solver.grid.cells[step.used[i]]
         boxClasses[cell.id] = boxClasses[cell.id] + ' bgcolor' + cell.digit
         digitClasses[cell.id] = digitClasses[cell.id] + ' color' + cell.digit
       }
@@ -156,7 +154,7 @@ class App extends Component {
     // hidden
     if(step.strategy.type === 'HiddenSingle'){
       
-      let unfilledCellsInHouse = this.state.grid[step.house.type][step.house.id].cells.filter( v => v.digit === 0).filter(v=> v.id !== cell.id)
+      let unfilledCellsInHouse = this.state.solver.grid[step.house.type][step.house.id].cells.filter( v => v.digit === 0).filter(v=> v.id !== cell.id)
       let nextColor
       let color
       let bgcolor 
@@ -210,7 +208,7 @@ class App extends Component {
       for( let id of step.id){
         boxClasses[id] = ' targetCell '
       }
-      ruleOut = this.state.grid[step.house.type][step.house.id].cells
+      ruleOut = this.state.solver.grid[step.house.type][step.house.id].cells
       .filter( v => v.digit === 0) //unused
       .filter( v => step.id.indexOf(v.id) === -1)  // not in naked
       .filter( v => [...v.possibilities].some(p=> [...step.digits].includes(p))) // has digits as possibles
@@ -219,7 +217,7 @@ class App extends Component {
       digits = [...step.digits]
 
 
-      let cells = this.state.grid[step.house.type][step.house.id].cells.filter( v=> step.id.includes(v.id))
+      let cells = this.state.solver.grid[step.house.type][step.house.id].cells.filter( v=> step.id.includes(v.id))
       rows = cells.map( v=> `${v.row}`).join(' ')
       columns = cells.map( v=> `${v.column}`).join(' ')
       squares = cells.map( v=> `${v.square}`).join(' ')
@@ -235,7 +233,7 @@ class App extends Component {
         boxClasses[id] = ' targetCell '
       }
       //
-      let lockedHouse = this.state.grid[step.house.type][step.house.id]
+      let lockedHouse = this.state.solver.grid[step.house.type][step.house.id]
 
       let unfilledCellsInLocked = lockedHouse.cells
       .filter( v => v.digit === 0)
@@ -264,7 +262,7 @@ class App extends Component {
       }
 
       //      
-      ruleOut = this.state.grid[step.locked.type][step.locked.id].cells
+      ruleOut = this.state.solver.grid[step.locked.type][step.locked.id].cells
       .filter( v => step.ids.indexOf(v.id) === -1 )
       .filter( v => v.possibilities.has(step.digit))  
       .map(v=>v.id)    
@@ -275,7 +273,7 @@ class App extends Component {
 
       locked = step.locked
 
-      let cells = this.state.grid[step.house.type][step.house.id].cells.filter( v=> step.ids.includes(v.id))
+      let cells = this.state.solver.grid[step.house.type][step.house.id].cells.filter( v=> step.ids.includes(v.id))
       rows = cells.map( v=> `${v.row}`).join(' ')
       columns = cells.map( v=> `${v.column}`).join(' ')
       squares = cells.map( v=> `${v.square}`).join(' ')
@@ -291,7 +289,7 @@ class App extends Component {
 
       digits = [...step.digits]
 
-      let cells = this.state.grid[step.house.type][step.house.id].cells.filter( v=> step.id.includes(v.id))
+      let cells = this.state.solver.grid[step.house.type][step.house.id].cells.filter( v=> step.id.includes(v.id))
       rows = cells.map( v=> `${v.row}`).join(' ')
       columns = cells.map( v=> `${v.column}`).join(' ')
       squares = cells.map( v=> `${v.square}`).join(' ')
@@ -301,14 +299,14 @@ class App extends Component {
 
     
     if(step.strategy.type === 'Fish'){
-      let targetCells = this.state.grid.cells.filter( v=> step.rows.includes(v.rowID)).filter( v=> step.columns.includes(v.columnID)).map(v=>v.id)
+      let targetCells = this.state.solver.grid.cells.filter( v=> step.rows.includes(v.rowID)).filter( v=> step.columns.includes(v.columnID)).map(v=>v.id)
       for( let id of targetCells){
         boxClasses[id] = ' targetCell '
       }
 
       keep = targetCells
 
-      ruleOut = this.state.grid.cells
+      ruleOut = this.state.solver.grid.cells
         .filter( v => step.rows.indexOf(v.rowID) === -1 )
         .filter( v => step.columns.indexOf(v.columnID) > -1 )
         .filter( v => v.possibilities.has(step.digit) )
@@ -350,7 +348,7 @@ class App extends Component {
   }
 
   apply = () => {
-    if(!this.state.grid.next()){
+    if(!this.state.solver.next()){
       this.setState({ 
         autoplay: false
       }); 
@@ -359,7 +357,7 @@ class App extends Component {
     this.setState({ highLight: {on:false} }); 
 
     
-    this.state.grid.apply(this.state.grid.next())
+    this.state.solver.apply(this.state.solver.next())
 
     this.setState({ step: this.state.step+1 }); 
   }
@@ -402,7 +400,7 @@ class App extends Component {
 
   render() {
 
-    const { grid, items } = this.state
+    const { solver, items } = this.state
     let self = this;
  
     return (
@@ -421,47 +419,47 @@ class App extends Component {
           <div className={`columnDetail ${self.showColumn('C9')}`} id='column9'>C9</div>
 
           <div className={`columnDetail ${self.showRow('R1')}`} id='row1'>R1</div>
-          {grid.cells.filter( cell => cell.rowID === 0).map(function(cell){
+          {solver.grid.cells.filter( cell => cell.rowID === 0).map(function(cell){
             return <Cell cell={cell} highlight={self.state.highLight} key={cell.id} />
           })}     
 
           <div className={`columnDetail ${self.showRow('R2')}`}  id='row2'>R2</div>
-          {grid.cells.filter( cell => cell.rowID === 1).map(function(cell){
+          {solver.grid.cells.filter( cell => cell.rowID === 1).map(function(cell){
             return <Cell cell={cell} highlight={self.state.highLight} key={cell.id} />
           })} 
 
           <div className={`columnDetail ${self.showRow('R3')}`}  id='row3'>R3</div>
-          {grid.cells.filter( cell => cell.rowID === 2).map(function(cell){
+          {solver.grid.cells.filter( cell => cell.rowID === 2).map(function(cell){
             return <Cell cell={cell} highlight={self.state.highLight} key={cell.id} />
           })}     
 
           <div className={`columnDetail ${self.showRow('R4')}`}  id='row4'>R4</div>
-          {grid.cells.filter( cell => cell.rowID === 3).map(function(cell){
+          {solver.grid.cells.filter( cell => cell.rowID === 3).map(function(cell){
             return <Cell cell={cell} highlight={self.state.highLight} key={cell.id} />
           })}    
 
           <div className={`columnDetail ${self.showRow('R5')}`}  id='row5'>R5</div>
-          {grid.cells.filter( cell => cell.rowID === 4).map(function(cell){
+          {solver.grid.cells.filter( cell => cell.rowID === 4).map(function(cell){
             return <Cell cell={cell} highlight={self.state.highLight} key={cell.id} />
           })}   
 
           <div className={`columnDetail ${self.showRow('R6')}`}  id='row6'>R6</div>  
-          {grid.cells.filter( cell => cell.rowID === 5).map(function(cell){
+          {solver.grid.cells.filter( cell => cell.rowID === 5).map(function(cell){
             return <Cell cell={cell} highlight={self.state.highLight} key={cell.id} />
           })}    
 
           <div className={`columnDetail ${self.showRow('R7')}`}  id='row7'>R7</div>      
-          {grid.cells.filter( cell => cell.rowID === 6).map(function(cell){
+          {solver.grid.cells.filter( cell => cell.rowID === 6).map(function(cell){
             return <Cell cell={cell} highlight={self.state.highLight} key={cell.id} />
           })}    
 
           <div className={`columnDetail ${self.showRow('R8')}`}  id='row8'>R8</div>  
-          {grid.cells.filter( cell => cell.rowID === 7).map(function(cell){
+          {solver.grid.cells.filter( cell => cell.rowID === 7).map(function(cell){
             return <Cell cell={cell} highlight={self.state.highLight} key={cell.id} />
           })}    
 
           <div className={`columnDetail ${self.showRow('R9')}`}  id='row9'>R9</div>  
-          {grid.cells.filter( cell => cell.rowID === 8).map(function(cell){
+          {solver.grid.cells.filter( cell => cell.rowID === 8).map(function(cell){
             return <Cell cell={cell} highlight={self.state.highLight} key={cell.id} />
           })}    
 
