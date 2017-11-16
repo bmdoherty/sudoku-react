@@ -251,8 +251,7 @@ class App extends Component {
       let nextColor
       let color
       let bgcolor 
-      console.log(step)
-      console.log(unfilledCellsInLocked)
+
       for( let unfilledCell of unfilledCellsInLocked){
         let seenByCells = [...unfilledCell.canSee].filter( v => v.digit === step.digit)
         let seenBy = seenByCells[0] 
