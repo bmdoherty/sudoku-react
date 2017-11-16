@@ -7,6 +7,9 @@ import AutoplayButton from './components/AutoplayButton'
 import Log from './components/Log.js';
 import Cell from './components/Cell.js';
 
+import Highlighter from './Highlighter.js';
+
+
 import './App.css';
 
 class App extends Component {
@@ -19,7 +22,8 @@ class App extends Component {
       solver: new Solver('000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000\n000000000'),
       highLight: {used:[]},
       items: [],
-      autoplay:false
+      autoplay:false,
+      
     };
 
 
@@ -29,6 +33,8 @@ class App extends Component {
     this.autoplay = this.autoplay.bind(this);
     this.toggleAutoplay = this.toggleAutoplay.bind(this);
     this.loadGridFromHash = this.loadGridFromHash.bind(this);
+
+    this.h = new Highlighter()
   }
 
   loadGridFromHash() {
@@ -43,7 +49,9 @@ class App extends Component {
       this.setState({ step: 1});
       this.setState({ items: [{text:`${v.message}`, key:'grid-info'}] }); 
 
+
       this.setState({ highLight: {on:false} }); 
+      this.h.input(this.grid, 'clear')
 
       if( hash.length && v.isValid ){  
 
@@ -243,19 +251,23 @@ class App extends Component {
       let nextColor
       let color
       let bgcolor 
+      console.log(step)
+      console.log(unfilledCellsInLocked)
       for( let unfilledCell of unfilledCellsInLocked){
         let seenByCells = [...unfilledCell.canSee].filter( v => v.digit === step.digit)
         let seenBy = seenByCells[0] 
 
-        if(!digitClasses[seenBy.id]){
-          nextColor = colors.shift()
-          color = ' color' + nextColor
-          bgcolor = ' bgcolor' + nextColor
-          digitClasses[seenBy.id] = color + bgcolor
-          digitClasses[unfilledCell.id] = ' color' + nextColor              
-        } else {
-          digitClasses[seenBy.id] = digitClasses[seenBy.id] 
-          digitClasses[unfilledCell.id] = ' color' + nextColor              
+        if(seenBy){
+          if(!digitClasses[seenBy.id]){
+            nextColor = colors.shift()
+            color = ' color' + nextColor
+            bgcolor = ' bgcolor' + nextColor
+            digitClasses[seenBy.id] = color + bgcolor
+            digitClasses[unfilledCell.id] = ' color' + nextColor              
+          } else {
+            digitClasses[seenBy.id] = digitClasses[seenBy.id] 
+            digitClasses[unfilledCell.id] = ' color' + nextColor              
+          }
         }
            
         cellContent[unfilledCell.id] = 'X'
@@ -343,7 +355,10 @@ class App extends Component {
       cellContent: cellContent
 
     } 
+
     this.setState({ highLight: highLight }); 
+
+    this.h.input(this.grid, step.strategy.type)
     this.state.items.unshift(item)
   }
 
@@ -354,7 +369,9 @@ class App extends Component {
       }); 
       return
     }    
+    
     this.setState({ highLight: {on:false} }); 
+    this.h.input(this.grid, 'clear')
 
     
     this.state.solver.apply(this.state.solver.next())
