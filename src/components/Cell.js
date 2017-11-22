@@ -10,77 +10,87 @@ export default class Cell extends React.Component {
         let highLightClass = ''
 
 
-        if( highlight.on){
-          if( highlight.cell){
+        //if( highlight.on){
+        //  if( highlight.cell){
 
     
-          if( highlight.cell.id === cell.id ){
-            highLightClass = 'targetCell' 
+          // if( highlight.cell.id === cell.id ){
+          //   highLightClass = 'targetCell' 
+          // }
+    
+          // if(highlight.strategy.type === 'NakedSingle'){
+          //   // if( highlight.cell.column === cell.column ){
+          //   //   highLightClass = highLightClass + ' highlightColumn'
+          //   // }    
+        
+          //   // if(  highlight.cell.row === cell.row ){
+          //   //   highLightClass = highLightClass + ' highlightRow'
+          //   // }       
+          
+          //   // if(  highlight.cell.square === cell.square ){
+          //   //   highLightClass = highLightClass + ' highlightSquare'
+          //   // }  
+          // }            
+        
+
+          // if(highlight.strategy.type === 'HiddenSingle'){
+          //  // console.log(highlight)
+          //   if( highlight.house.type === 'row' &&  highlight.house.id === cell.rowID){
+          //     highLightClass = highLightClass + ' highlightRow'
+          //   }    
+        
+          //   if( highlight.house.type === 'column' &&  highlight.house.id === cell.columnID){
+          //     highLightClass = highLightClass + ' highlightColumn'
+          //   }       
+          
+          //   if( highlight.house.type === 'square' &&  highlight.house.id === cell.squareID){
+          //     highLightClass = highLightClass + ' highlightSquare'
+          //   }  
+          // }  
+       // }
+
+          // if(highlight.strategy.type === 'Naked'){
+            
+          //   //  if( highlight.house.type === 'row' &&  highlight.house.id === cell.rowID){
+          //   //    highLightClass = highLightClass + ' highlightRow'
+          //   //  }    
+         
+          //   //  if( highlight.house.type === 'column' &&  highlight.house.id === cell.columnID){
+          //   //    highLightClass = highLightClass + ' highlightColumn'
+          //   //  }       
+           
+          //   //  if( highlight.house.type === 'square' &&  highlight.house.id === cell.squareID){
+          //   //    highLightClass = highLightClass + ' highlightSquare'
+          //   //  }  
+          //  }  
+           
+          //  if( highlight.strategy.type === 'LockedCandidate'){
+            
+          //   //  if( (highlight.house.type === 'row' &&  highlight.house.id === cell.rowID) || (highlight.locked.type === 'row' &&  highlight.locked.id === cell.rowID)){
+          //   //    highLightClass = highLightClass + ' highlightRow'
+          //   //  }    
+         
+          //   //  if( (highlight.house.type === 'column' &&  highlight.house.id === cell.columnID) || (highlight.locked.type === 'column' &&  highlight.locked.id === cell.columnID)){
+          //   //    highLightClass = highLightClass + ' highlightColumn'
+          //   //  }       
+           
+          //   //  if( (highlight.house.type === 'square' &&  highlight.house.id === cell.squareID) || (highlight.locked.type === 'square' &&  highlight.locked.id === cell.squareID)){
+          //   //    highLightClass = highLightClass + ' highlightSquare'
+          //   //  }  
+          //  }              
+        //}
+    
+        if( highlight.on){
+          let facet = highlight.facets.filter( v => v.id === cell.id)[0]
+          if(facet){
+            highLightClass = highLightClass + facet.box
           }
-    
-          if(highlight.strategy.type === 'NakedSingle'){
-            // if( highlight.cell.column === cell.column ){
-            //   highLightClass = highLightClass + ' highlightColumn'
-            // }    
-        
-            // if(  highlight.cell.row === cell.row ){
-            //   highLightClass = highLightClass + ' highlightRow'
-            // }       
-          
-            // if(  highlight.cell.square === cell.square ){
-            //   highLightClass = highLightClass + ' highlightSquare'
-            // }  
-          }            
-        
+                  
 
-          if(highlight.strategy.type === 'HiddenSingle'){
-           // console.log(highlight)
-            if( highlight.house.type === 'row' &&  highlight.house.id === cell.rowID){
-              highLightClass = highLightClass + ' highlightRow'
-            }    
-        
-            if( highlight.house.type === 'column' &&  highlight.house.id === cell.columnID){
-              highLightClass = highLightClass + ' highlightColumn'
-            }       
-          
-            if( highlight.house.type === 'square' &&  highlight.house.id === cell.squareID){
-              highLightClass = highLightClass + ' highlightSquare'
-            }  
-          }  
-        }
+          if(highlight.boxClasses[cell.id]){
+            highLightClass = highLightClass + highlight.boxClasses[cell.id]
+          } 
 
-          if(highlight.strategy.type === 'Naked'){
-            
-             if( highlight.house.type === 'row' &&  highlight.house.id === cell.rowID){
-               highLightClass = highLightClass + ' highlightRow'
-             }    
-         
-             if( highlight.house.type === 'column' &&  highlight.house.id === cell.columnID){
-               highLightClass = highLightClass + ' highlightColumn'
-             }       
-           
-             if( highlight.house.type === 'square' &&  highlight.house.id === cell.squareID){
-               highLightClass = highLightClass + ' highlightSquare'
-             }  
-           }  
-           
-           if( highlight.strategy.type === 'LockedCandidate'){
-            
-             if( (highlight.house.type === 'row' &&  highlight.house.id === cell.rowID) || (highlight.locked.type === 'row' &&  highlight.locked.id === cell.rowID)){
-               highLightClass = highLightClass + ' highlightRow'
-             }    
-         
-             if( (highlight.house.type === 'column' &&  highlight.house.id === cell.columnID) || (highlight.locked.type === 'column' &&  highlight.locked.id === cell.columnID)){
-               highLightClass = highLightClass + ' highlightColumn'
-             }       
-           
-             if( (highlight.house.type === 'square' &&  highlight.house.id === cell.squareID) || (highlight.locked.type === 'square' &&  highlight.locked.id === cell.squareID)){
-               highLightClass = highLightClass + ' highlightSquare'
-             }  
-           }              
-        }
-    
-        if( highlight.on){
             if(highlight.boxClasses[cell.id]){
               highLightClass = highLightClass + highlight.boxClasses[cell.id]
             } 

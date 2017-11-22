@@ -34,11 +34,12 @@ class App extends Component {
     this.toggleAutoplay = this.toggleAutoplay.bind(this);
     this.loadGridFromHash = this.loadGridFromHash.bind(this);
 
-    this.h = new Highlighter()
+    this.highlighter = new Highlighter()
   }
 
   loadGridFromHash() {
     let solver
+    let clear = {strategy : { type: 'clear'}}
 
     if(window.location.hash) {
       let hash = window.location.hash.substring(1)
@@ -51,7 +52,8 @@ class App extends Component {
 
 
       this.setState({ highLight: {on:false} }); 
-      this.h.input(this.grid, 'clear')
+
+      this.highlighter.input(this.grid, clear)
 
       if( hash.length && v.isValid ){  
 
@@ -117,251 +119,266 @@ class App extends Component {
     if(!this.state.solver.next()){
       return
     }
-
+    
     let step = this.state.solver.next()
 
-    let cell = this.state.solver.grid.cells[step.id]
-    let digitClasses = {}
-    let boxClasses = {}    
-    let cellContent = {}
+     let cell = this.state.solver.grid.cells[step.id]
+    // let digitClasses = {}
+    // let boxClasses = {}    
+    // let cellContent = {}
+    // 
+    // let ruleOut = []
+    // let keep = []
+    // let squares = []
+    // let rows = []
+    // let columns = []
+    // //let colors = [1,2,3,4,5,6,7,8,9]
+    // let locked
+    // let hiddenCells = []  
+    let highLight = {}  
     let item = {}
-    let ruleOut = []
-    let keep = []
-    let squares = []
-    let rows = []
-    let columns = []
-    let colors = [1,2,3,4,5,6,7,8,9]
-    let locked
-    let hiddenCells = []    
-
     if(cell){
       item = {text:`${step.strategy.type}: The cell at ${cell.row},${cell.column},${cell.square} must be ${step.digit} \n`, key:`${cell.id}-`}  
-      rows = [cell.row]
-      columns = [cell.column]
-      squares = [cell.square]
-      ruleOut = [...cell.canSee].filter(cell => [...cell.possibilities].includes(step.digit) ).map(v=>v.id)
+      // rows = [cell.row]
+      // columns = [cell.column]
+      // squares = [cell.square]
+      // ruleOut = [...cell.canSee].filter(cell => [...cell.possibilities].includes(step.digit) ).map(v=>v.id)
     } else {
       item = {text:`${step.strategy.type}${step.length?` ${step.length}`:``} \n`, key:this.state.step}
 
     }
     
-    let digits = [step.digit]
+    // let digits = [step.digit]
 
-    if(step.strategy.type === 'NakedSingle' && step.used.length === 8){
-      for(let i=0; i<8; i++){
-        let cell = this.state.solver.grid.cells[step.used[i]]
-        boxClasses[cell.id] = boxClasses[cell.id] + ' bgcolor' + cell.digit
-        digitClasses[cell.id] = digitClasses[cell.id] + ' color' + cell.digit
-      }
-      keep = [step.id]
-    }else{
-      keep = [step.id]
-    
-    }
+    // if(step.strategy.type === 'NakedSingle' && step.used.length === 8){
+    //   for(let i=0; i<8; i++){
+    //     let cell = this.state.solver.grid.cells[step.used[i]]
+    //     boxClasses[cell.id] = boxClasses[cell.id] + ' bgcolor' + cell.digit
+    //     digitClasses[cell.id] = digitClasses[cell.id] + ' color' + cell.digit
+    //   }
+    //   keep = [step.id]
+    // }else{
+    //   keep = [step.id]
+    // }
 
     // hidden
-    if(step.strategy.type === 'HiddenSingle'){
+    // if(step.strategy.type === 'HiddenSingle'){
       
-      let unfilledCellsInHouse = this.state.solver.grid[step.house.type][step.house.id].cells.filter( v => v.digit === 0).filter(v=> v.id !== cell.id)
-      let nextColor
-      let color
-      let bgcolor 
-      for( let unfilledCell of unfilledCellsInHouse){
-        let seenByCells = [...unfilledCell.canSee].filter( v => v.digit === step.digit)
-        let seenBy 
+    //   let unfilledCellsInHouse = this.state.solver.grid[step.house.type][step.house.id].cells.filter( v => v.digit === 0).filter(v=> v.id !== cell.id)
+    //   let nextColor
+    //   let color
+    //   let bgcolor 
+    //   for( let unfilledCell of unfilledCellsInHouse){
+    //     let seenByCells = [...unfilledCell.canSee].filter( v => v.digit === step.digit)
+    //     let seenBy 
 
-        let seenInSquare = seenByCells.filter( v=> v.squareID === unfilledCell.squareID)
-        if(seenInSquare.length){
+    //     let seenInSquare = seenByCells.filter( v=> v.squareID === unfilledCell.squareID)
+    //     if(seenInSquare.length){
         
-            seenBy = seenInSquare[0] 
-            if(!digitClasses[seenBy.id]){
-              nextColor = colors.shift()
-              color = ' color' + nextColor
-              bgcolor = ' bgcolor' + nextColor
-              digitClasses[seenBy.id] = color + bgcolor
-              digitClasses[unfilledCell.id] = ' color' + nextColor              
-            } else {
-              digitClasses[seenBy.id] = digitClasses[seenBy.id] 
-              digitClasses[unfilledCell.id] = ' color' + nextColor              
-            }
+    //         seenBy = seenInSquare[0] 
+    //         if(!digitClasses[seenBy.id]){
+    //           nextColor = colors.shift()
+    //           color = ' color' + nextColor
+    //           bgcolor = ' bgcolor' + nextColor
+    //           digitClasses[seenBy.id] = color + bgcolor
+    //           digitClasses[unfilledCell.id] = ' color' + nextColor              
+    //         } else {
+    //           digitClasses[seenBy.id] = digitClasses[seenBy.id] 
+    //           digitClasses[unfilledCell.id] = ' color' + nextColor              
+    //         }
 
 
-        }
-        else{
+    //     }
+    //     else{
           
-          let seenOutsideSquare = seenByCells.filter( v=> v.squareID !== unfilledCell.squareID)
-          if(seenOutsideSquare.length){
-            seenBy = seenOutsideSquare[0] 
-            if(!digitClasses[seenBy.id]){
-              nextColor = colors.shift()
-              color = ' color' + nextColor
-              bgcolor = ' bgcolor' + nextColor
-              digitClasses[seenBy.id] = color + bgcolor
-              digitClasses[unfilledCell.id] = ' color' + nextColor              
-            } else {
-              digitClasses[seenBy.id] = digitClasses[seenBy.id] 
-              digitClasses[unfilledCell.id] = ' color' + nextColor              
-            }
-          }  
-        }
+    //       let seenOutsideSquare = seenByCells.filter( v=> v.squareID !== unfilledCell.squareID)
+    //       if(seenOutsideSquare.length){
+    //         seenBy = seenOutsideSquare[0] 
+    //         if(!digitClasses[seenBy.id]){
+    //           nextColor = colors.shift()
+    //           color = ' color' + nextColor
+    //           bgcolor = ' bgcolor' + nextColor
+    //           digitClasses[seenBy.id] = color + bgcolor
+    //           digitClasses[unfilledCell.id] = ' color' + nextColor              
+    //         } else {
+    //           digitClasses[seenBy.id] = digitClasses[seenBy.id] 
+    //           digitClasses[unfilledCell.id] = ' color' + nextColor              
+    //         }
+    //       }  
+    //     }
       
-        keep = [step.id]
-        cellContent[unfilledCell.id] = 'X'
-      }
+    //     keep = [step.id]
+    //     cellContent[unfilledCell.id] = 'X'
+    //   }
       
-    }
+    // }
 
-    if(step.strategy.type === 'Naked'){
-      //let colors = [1,2,3,4,5,6,7,8,9]
-      for( let id of step.id){
-        boxClasses[id] = ' targetCell '
-      }
-      ruleOut = this.state.solver.grid[step.house.type][step.house.id].cells
-      .filter( v => v.digit === 0) //unused
-      .filter( v => step.id.indexOf(v.id) === -1)  // not in naked
-      .filter( v => [...v.possibilities].some(p=> [...step.digits].includes(p))) // has digits as possibles
-      .map(v=>v.id) 
+    // let highLight2 = this.highlighter.naked(this.state.solver.grid, step)
+    // console.log(highLight2)
+    // if(step.strategy.type === 'Naked'){
+    //   //let colors = [1,2,3,4,5,6,7,8,9]
+    //   for( let id of step.id){
+    //     boxClasses[id] = ' targetCell '
+    //   }
+    //   ruleOut = this.state.solver.grid[step.house.type][step.house.id].cells
+    //   .filter( v => v.digit === 0) //unused
+    //   .filter( v => step.id.indexOf(v.id) === -1)  // not in naked
+    //   .filter( v => [...v.possibilities].some(p=> [...step.digits].includes(p))) // has digits as possibles
+    //   .map(v=>v.id) 
 
-      digits = [...step.digits]
+    //   digits = [...step.digits]
 
 
-      let cells = this.state.solver.grid[step.house.type][step.house.id].cells.filter( v=> step.id.includes(v.id))
-      rows = cells.map( v=> `${v.row}`).join(' ')
-      columns = cells.map( v=> `${v.column}`).join(' ')
-      squares = cells.map( v=> `${v.square}`).join(' ')
+    //   let cells = this.state.solver.grid[step.house.type][step.house.id].cells.filter( v=> step.id.includes(v.id))
+    //   rows = cells.map( v=> `${v.row}`).join(' ')
+    //   columns = cells.map( v=> `${v.column}`).join(' ')
+    //   squares = cells.map( v=> `${v.square}`).join(' ')
 
-      keep = step.id
-    } 
+    //   keep = step.id
+    // } 
     
-    if(step.strategy.type === 'LockedCandidate'){
+    // if(step.strategy.type === 'LockedCandidate'){
 
-      let colors = [1,2,3,4,5,6,7,8,9]
+    //   let colors = [1,2,3,4,5,6,7,8,9]
 
-      for( let id of step.ids){
-        boxClasses[id] = ' targetCell '
-      }
-      //
-      let lockedHouse = this.state.solver.grid[step.house.type][step.house.id]
+    //   for( let id of step.ids){
+    //     boxClasses[id] = ' targetCell '
+    //   }
+    //   //
+    //   let lockedHouse = this.state.solver.grid[step.house.type][step.house.id]
 
-      let unfilledCellsInLocked = lockedHouse.cells
-      .filter( v => v.digit === 0)
-      .filter( v => !step.ids.includes(v.id))
+    //   let unfilledCellsInLocked = lockedHouse.cells
+    //   .filter( v => v.digit === 0)
+    //   .filter( v => !step.ids.includes(v.id))
 
       
-      let nextColor
-      let color
-      let bgcolor 
+    //   let nextColor
+    //   let color
+    //   let bgcolor 
 
-      for( let unfilledCell of unfilledCellsInLocked){
-        let seenByCells = [...unfilledCell.canSee].filter( v => v.digit === step.digit)
-        let seenBy = seenByCells[0] 
+    //   for( let unfilledCell of unfilledCellsInLocked){
+    //     let seenByCells = [...unfilledCell.canSee].filter( v => v.digit === step.digit)
+    //     let seenBy = seenByCells[0] 
 
-        if(seenBy){
-          if(!digitClasses[seenBy.id]){
-            nextColor = colors.shift()
-            color = ' color' + nextColor
-            bgcolor = ' bgcolor' + nextColor
-            digitClasses[seenBy.id] = color + bgcolor
-            digitClasses[unfilledCell.id] = ' color' + nextColor              
-          } else {
-            digitClasses[seenBy.id] = digitClasses[seenBy.id] 
-            digitClasses[unfilledCell.id] = ' color' + nextColor              
-          }
-        }
+    //     if(seenBy){
+    //       if(!digitClasses[seenBy.id]){
+    //         nextColor = colors.shift()
+    //         color = ' color' + nextColor
+    //         bgcolor = ' bgcolor' + nextColor
+    //         digitClasses[seenBy.id] = color + bgcolor
+    //         digitClasses[unfilledCell.id] = ' color' + nextColor              
+    //       } else {
+    //         digitClasses[seenBy.id] = digitClasses[seenBy.id] 
+    //         digitClasses[unfilledCell.id] = ' color' + nextColor              
+    //       }
+    //     }
            
-        cellContent[unfilledCell.id] = 'X'
-      }
+    //     cellContent[unfilledCell.id] = 'X'
+    //   }
 
-      //      
-      ruleOut = this.state.solver.grid[step.locked.type][step.locked.id].cells
-      .filter( v => step.ids.indexOf(v.id) === -1 )
-      .filter( v => v.possibilities.has(step.digit))  
-      .map(v=>v.id)    
+    //   //      
+    //   ruleOut = this.state.solver.grid[step.locked.type][step.locked.id].cells
+    //   .filter( v => step.ids.indexOf(v.id) === -1 )
+    //   .filter( v => v.possibilities.has(step.digit))  
+    //   .map(v=>v.id)    
       
-      keep = step.ids
+    //   keep = step.ids
 
-      digits = [step.digit]
+    //   digits = [step.digit]
 
-      locked = step.locked
+    //   locked = step.locked
 
-      let cells = this.state.solver.grid[step.house.type][step.house.id].cells.filter( v=> step.ids.includes(v.id))
-      rows = cells.map( v=> `${v.row}`).join(' ')
-      columns = cells.map( v=> `${v.column}`).join(' ')
-      squares = cells.map( v=> `${v.square}`).join(' ')
+    //   let cells = this.state.solver.grid[step.house.type][step.house.id].cells.filter( v=> step.ids.includes(v.id))
+    //   rows = cells.map( v=> `${v.row}`).join(' ')
+    //   columns = cells.map( v=> `${v.column}`).join(' ')
+    //   squares = cells.map( v=> `${v.square}`).join(' ')
 
-    }        
+    // }        
 
-    if(step.strategy.type === 'Hidden'){
-      //let colors = [1,2,3,4,5,6,7,8,9]
-      for( let id of step.id){
-        boxClasses[id] = ' targetCell '
-      }
-      ruleOut = []
+    // if(step.strategy.type === 'Hidden'){
+    //   //let colors = [1,2,3,4,5,6,7,8,9]
+    //   for( let id of step.id){
+    //     boxClasses[id] = ' targetCell '
+    //   }
+    //   ruleOut = []
 
-      digits = [...step.digits]
+    //   digits = [...step.digits]
 
-      let cells = this.state.solver.grid[step.house.type][step.house.id].cells.filter( v=> step.id.includes(v.id))
-      rows = cells.map( v=> `${v.row}`).join(' ')
-      columns = cells.map( v=> `${v.column}`).join(' ')
-      squares = cells.map( v=> `${v.square}`).join(' ')
+    //   let cells = this.state.solver.grid[step.house.type][step.house.id].cells.filter( v=> step.id.includes(v.id))
+    //   rows = cells.map( v=> `${v.row}`).join(' ')
+    //   columns = cells.map( v=> `${v.column}`).join(' ')
+    //   squares = cells.map( v=> `${v.square}`).join(' ')
 
-      hiddenCells = step.id
-    } 
+    //   hiddenCells = step.id
+    // } 
 
     
-    if(step.strategy.type === 'Fish'){
-      let targetCells = this.state.solver.grid.cells.filter( v=> step.rows.includes(v.rowID)).filter( v=> step.columns.includes(v.columnID)).map(v=>v.id)
-      for( let id of targetCells){
-        boxClasses[id] = ' targetCell '
-      }
+    // if(step.strategy.type === 'Fish'){
+    //   let targetCells = this.state.solver.grid.cells.filter( v=> step.rows.includes(v.rowID)).filter( v=> step.columns.includes(v.columnID)).map(v=>v.id)
+    //   for( let id of targetCells){
+    //     boxClasses[id] = ' targetCell '
+    //   }
 
-      keep = targetCells
+    //   keep = targetCells
 
-      ruleOut = this.state.solver.grid.cells
-        .filter( v => step.rows.indexOf(v.rowID) === -1 )
-        .filter( v => step.columns.indexOf(v.columnID) > -1 )
-        .filter( v => v.possibilities.has(step.digit) )
-        .map(v=>v.id)       
+    //   ruleOut = this.state.solver.grid.cells
+    //     .filter( v => step.rows.indexOf(v.rowID) === -1 )
+    //     .filter( v => step.columns.indexOf(v.columnID) > -1 )
+    //     .filter( v => v.possibilities.has(step.digit) )
+    //     .map(v=>v.id)       
 
 
 
-      //return {'digit':digit, 'rows':fishRows, 'columns':fishColumns, 'length':fishRows.length, 'strategy':this}  
+    //   //return {'digit':digit, 'rows':fishRows, 'columns':fishColumns, 'length':fishRows.length, 'strategy':this}  
 
-      rows = step.rows.map(r=> `R${r+1}`).join(' ')
-      columns = step.columns.map(r=> `C${r+1}`).join(' ')
+    //   rows = step.rows.map(r=> `R${r+1}`).join(' ')
+    //   columns = step.columns.map(r=> `C${r+1}`).join(' ')
 
-      digits = [step.digit]
+    //   digits = [step.digit]
   
-    } 
+    // } 
 
-    let highLight = {
-      on:true,
-      rows: rows,
-      columns: columns,
-      squares: squares,
-      cell:cell,
-      digits:digits,
-      ruleOut: ruleOut,
-      keep: keep,
-      house:step.house,
-      ids:step.ids,
-      strategy:step.strategy,
-      hiddenCells:hiddenCells,
-      length:step.length,
-      locked:locked,
-      boxClasses: boxClasses,
-      digitClasses: digitClasses,
-      cellContent: cellContent
 
-    } 
+    // if(step.strategy.type === 'NakedSingle' 
+    //   || step.strategy.type === 'HiddenSingle' 
+    //   || step.strategy.type === 'Naked' 
+    //   || step.strategy.type === 'LockedCandidate' 
+    //   || step.strategy.type === 'Hidden'   
+    //   || step.strategy.type === 'Fish'         ){
+      highLight = this.highlighter.input(this.state.solver.grid, step) 
+     // console.log( highLight )
+    // }
+    // else{
+    //   highLight = {
+    //     on:true,
+    //     rows: rows,
+    //     columns: columns,
+    //     squares: squares,
+    //     cell:cell,
+    //     digits:digits,
+    //     ruleOut: ruleOut,
+    //     keep: keep,
+    //     house:step.house,
+    //     ids:step.ids,
+    //     strategy:step.strategy,
+    //     hiddenCells:hiddenCells,
+    //     length:step.length,
+    //     locked:locked,
+    //     boxClasses: boxClasses,
+    //     digitClasses: digitClasses,
+    //     cellContent: cellContent
+    //   } 
+    // }
+    
 
     this.setState({ highLight: highLight }); 
-
-    this.h.input(this.grid, step.strategy.type)
     this.state.items.unshift(item)
   }
 
   apply = () => {
+
+    let clear = {strategy : { type: 'clear'}}
+
     if(!this.state.solver.next()){
       this.setState({ 
         autoplay: false
@@ -370,7 +387,7 @@ class App extends Component {
     }    
     
     this.setState({ highLight: {on:false} }); 
-    this.h.input(this.grid, 'clear')
+    this.highlighter.input(this.grid, clear)
 
     
     this.state.solver.apply(this.state.solver.next())

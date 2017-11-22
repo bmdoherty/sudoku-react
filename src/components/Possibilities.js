@@ -9,6 +9,19 @@ export default class Possibilities extends React.Component {
         let classes = ''
 
         if( highlight.on){
+            let facet = highlight.facets.filter( v => v.id === cell.id)[0]
+            if(facet){
+                if(facet.cannotBe === possibility){
+                    classes = classes + ' cannotBe' 
+                }  
+                if(facet.mustBe === possibility){
+                    classes = classes + ' mustBe' 
+                }    
+                if(facet.exclude === possibility){
+                    classes = classes + ' exclude' 
+                }                                                  
+            } 
+
             if( highlight.hiddenCells.includes(cell.id) && !highlight.digits.includes(possibility)){
                 classes = classes + ' exclude' 
             }   

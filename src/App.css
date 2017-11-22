@@ -1251,6 +1251,16 @@ td { border: solid medium gray; height: 2.4em; width: 2.4em; text-align: left; p
   background-color: rgba(51,160,44, 0.9);
 }
 
+.mustBe {
+  color: rgba(252, 253, 252, 0.9);
+  background-color: rgba(51,160,44, 0.9);
+}
+
+.cannotBe {
+  color: rgba(252, 253, 252, 0.9);
+  background-color: rgba(131, 184, 238, 0.815);
+}
+
 .theList{
   white-space: pre-line;
 }
