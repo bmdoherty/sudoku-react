@@ -22,7 +22,7 @@ const defaultHighlight = (grid, step) => {
   }
 
   if(cell){
-    highlight.boxClasses[cell.id] = 'targetCell' 
+    highlight.boxClasses[cell.id] = ' targetCell' 
 
     highlight.rows = [cell.row]
     highlight.columns = [cell.column]
@@ -47,10 +47,14 @@ const nakedSingle = (grid, step) => {
   if(step.used.length === 8){
     for(let i=0; i<8; i++){
       let cell = grid.cells[step.used[i]]
-      highlight.boxClasses[cell.id] = highlight.boxClasses[cell.id]? highlight.boxClasses[cell.id] + ' bgcolor' + cell.digit : 'bgcolor' + cell.digit 
-      highlight.digitClasses[cell.id] = highlight.digitClasses[cell.id] ? highlight.digitClasses[cell.id] + ' color' + cell.digit : 'color' + cell.digit
+      highlight.boxClasses[cell.id] = highlight.boxClasses[cell.id]? highlight.boxClasses[cell.id] + ' bgcolor' + cell.digit : ' bgcolor' + cell.digit 
+      highlight.digitClasses[cell.id] = highlight.digitClasses[cell.id] ? highlight.digitClasses[cell.id] + ' color' + cell.digit : ' color' + cell.digit
     }
   }  
+
+  highlight.boxClasses[step.id] = ' targetCell '
+  highlight.digits = [step.digit]
+  highlight.cellContent[step.id] = step.digit
 
   return highlight
 }
@@ -108,7 +112,7 @@ const hiddenSingle = (grid, step) => {
 
     let houseCells = grid[step.house.type][step.house.id].cells.filter(v=> v.id !== cell.id)
     for( let houseCell of houseCells){
-      highlight.boxClasses[houseCell.id] = 'highlightRow'
+      highlight.boxClasses[houseCell.id] = highlight.boxClasses[houseCell.id]  + ' highlightRow'
     }
   }
 
