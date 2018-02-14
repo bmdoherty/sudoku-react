@@ -4,9 +4,10 @@
 	"private": true,
 	"homepage": "https://bdoherty.github.io/sudoku-react",
 	"dependencies": {
-		"react": "^16.1.1",
-		"react-dom": "^16.1.1",
-		"react-scripts": "1.0.14"
+		"react": "^16.2.0",
+		"react-dom": "^16.2.0",
+		"react-scripts": "1.0.14",
+		"sudoku": "github:bmdoherty/sudoku"
 	},
 	"scripts": {
 		"predeploy": "npm run build",
@@ -22,7 +23,6 @@
 		"babel-loader": "^8.0.0-beta.0",
 		"babel-preset-env": "^1.6.1",
 		"jest": "^21.2.1",
-		"regenerator-runtime": "^0.11.0",
-		"sudoku": "github:bmdoherty/sudoku"
+		"regenerator-runtime": "^0.11.1"
 	}
 }
