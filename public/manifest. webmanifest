@@ -1,6 +1,6 @@
 {
-  "short_name": "BMDoherty Sudoku Solver - React",
-  "name": "BMDoherty Sudoku Solver - React",
+  "short_name": "Sudoku",
+  "name": "BDoherty Sudoku Solver: React",
   "icons": [
     {
       "src": "favicon.ico",
