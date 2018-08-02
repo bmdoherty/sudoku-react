@@ -4,8 +4,8 @@
 	"private": true,
 	"homepage": "https://bdoherty.github.io/sudoku-react",
 	"dependencies": {
-		"react": "^16.4.1",
-		"react-dom": "^16.4.1",
+		"react": "^16.4.2",
+		"react-dom": "^16.4.2",
 		"react-scripts": "^1.1.4",
 		"sudoku": "github:bmdoherty/sudoku"
 	},
@@ -18,11 +18,11 @@
 		"eject": "react-scripts eject"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.0.0-beta.54",
-		"@babel/preset-env": "^7.0.0-beta.54",
+		"@babel/core": "^7.0.0-beta.55",
+		"@babel/preset-env": "^7.0.0-beta.55",
 		"babel-loader": "^7.1.5",
 		"babel-preset-env": "^1.7.0",
-		"jest": "^23.4.1",
+		"jest": "^23.4.2",
 		"regenerator-runtime": "^0.12.0"
 	}
 }
