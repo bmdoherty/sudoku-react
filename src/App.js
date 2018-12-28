@@ -8,7 +8,6 @@ import Log from './components/Log.js';
 import Cell from './components/Cell.js';
 
 import Highlighter from './Highlighter.js';
-import Breadcrumb from '@ecl/ec-react-component-breadcrumb';
 
 import './App.css';
 
